@@ -1,32 +1,47 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+      <router-link :to="{ name: 'Home' }"><div class="container"><h1 class="title">What country are u lookin for?</h1></div></router-link>
     <router-view/>
   </div>
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+*, *::before, *::after{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box ;
+}
+:root{
+    --DarkBlueElement: hsl(209, 23%, 22%);
+    --VeryDarkBlueBG: hsl(207, 26%, 17%);
+    --VeryDarkBlueText: hsl(200, 15%, 8%);
+    --darkGray: hsl(0, 0%, 52%);
+    --VeryLightGrayBG: hsl(0, 0%, 98%);
+}
+body{
+    background-color: var(--VeryDarkBlueBG);
+    font-family: 'Nunito Sans', sans-serif;
+    font-size: 14px;
+    color: var(--VeryLightGrayBG);
 }
 
-#nav {
-  padding: 30px;
+.container{
+    width: min(96%, 1300px);
+    margin: 0 auto;
+    position: relative;
+    /* border: 1px solid red; */
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+a{
+  color: white;
+  text-decoration: none;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.title{
+  margin-top: 40px;
+}
+
+button{
+  cursor: pointer;
 }
 </style>
