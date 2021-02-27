@@ -7,19 +7,19 @@
       <input @input="changeCountry()" v-model="inputCountry" type="text" placeholder="Search for a country...">
     <select name="region" class="regionFilter" @change="changeRegion()" v-model="selectedRegion">
       <option value="">Worldwide</option>
-      <option v-for="(item, index) in region" :key="index" :value="item">{{ item }}</option>
+      <option v-for="(continent, index) in region" :key="index" :value="continent">{{ continent }}</option>
     </select>
     </div>
     <div class="showCountries row">
       <SearchError v-if="error" :isFromHome='true'/>
-        <div class="card" v-for="(item, index) in showCountries" :key="index">
-          <router-link v-bind:to="item.alpha3Code">
-          <div class="card-img"><img :src="item.flag" :alt="item.name" width="300px"></div>
+        <div class="card" v-for="(country, index) in showCountries" :key="index">
+          <router-link v-bind:to="country.alpha3Code">
+          <div class="card-img"><img :src="country.flag" :alt="country.name" width="300px"></div>
           <div class="card-text">
-            <h1 class="country-name">{{ item.name }}</h1>
-            <div class="population"><span>Population:</span> {{ item.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}</div>
-            <div class="region"><span>Region:</span> {{ item.subregion }}</div>
-            <div class="capital"><span>Capital: {{ item.capital }}</span></div>
+            <h1 class="country-name">{{ country.name }}</h1>
+            <div class="population"><span>Population:</span> {{ country.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}</div>
+            <div class="region"><span>Region:</span> {{ country.subregion }}</div>
+            <div class="capital"><span>Capital: {{ country.capital }}</span></div>
           </div>
           </router-link>
         </div>
@@ -41,8 +41,8 @@ export default {
       searchedCountry: '',
       selectedRegion: '',
       showCountries: '',
-      data: '',
-      RegionCountries: '',
+      data: [],
+      RegionCountries: [],
       error: false
     }
   },
@@ -79,6 +79,7 @@ export default {
           filterCountry.name.toLowerCase().includes(this.inputCountry.toLowerCase().trim())
           || filterCountry.alpha3Code.toLowerCase().includes(this.inputCountry.toLowerCase())
           || filterCountry.nativeName.toLowerCase().includes(this.inputCountry.toLowerCase().trim()))
+          // Mozliwosc wyszukania krajow po pelnych nazwach, skrotach jak i ich ojczystych naazwach
   
 
       this.showCountries = this.searchedCountry

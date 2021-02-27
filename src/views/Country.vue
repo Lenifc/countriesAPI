@@ -10,15 +10,17 @@
             <div class="details-row">
                <div class="details-row1">
                   <div class="country-native-name"><span>Native Name: </span>{{ data.nativeName }}</div>
-                  <div class="population" v-if="data.population"><span>Population:</span> {{ countryPopulation }}</div>
-                  <div class="population" v-else><span>Population:</span> Unknown</div>
+                  <div class="population"><span>Population:</span> {{ data.population ? countryPopulation : "Unknown" }}</div> <!-- skrocona wersja -->
+                  <!-- <div class="population" v-if="data.population"><span>Population:</span> {{ countryPopulation }}</div> -->
+                  <!-- <div class="population" v-else><span>Population:</span> Unknown</div> -->
                   <!-- United States Minor Outlying Islands - unknown size -->
                   <div class="region"><span>Region:</span> {{ data.subregion }}</div>
                   <div class="capital"><span>Capital: {{ data.capital }}</span></div>
                </div>
                <div class="details-row2">
-                  <div class="size" v-if="data.area"><span>Size: </span>{{ countrySize }} km<sup>2</sup></div>
-                  <div class="size" v-else><span>Size: </span>Unknown</div>
+                  <div class="size"><span>Size: </span>{{ data.area ? countrySize : "Unknown" }} km<sup>2</sup></div>
+                  <!-- <div class="size" v-if="data.area"><span>Size: </span>{{ countrySize }} km<sup>2</sup></div> -->
+                  <!-- <div class="size" v-else><span>Size: </span>Unknown</div> -->
                   <div class="currencies"><span>Currencies: </span>{{ Currencies }}</div>
                   <div class="languages"><span>Languages: </span>{{ Languages}}</div>
                </div>
@@ -32,6 +34,7 @@
          </div>
       </div>
    </div>
+   <div v-else><img class="loader" src="@/assets/spinner.gif"></div>
 
 
 </div>
@@ -47,7 +50,7 @@ export default {
    data() {
       return {
          name: this.$route.params.country,
-         data: '',
+         data: [],
          isLoaded: false,
          error: false
       }
@@ -162,6 +165,12 @@ export default {
 
 .btn-container{
    max-width: 100px;
+}
+
+.loader{
+   margin: 32px auto;
+   display: flex;
+   justify-content: center;
 }
 
 @media(max-width: 1000px){
