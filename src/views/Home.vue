@@ -1,18 +1,185 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="home container">
+    <div class="search-bar row">
+      <div class="search-icon"><img src="@/assets/search.svg" alt="search" width="30px"></div>
+      <!-- @ === v-on: -->
+      <!-- : === v-bind: -->
+      <input @input="changeCountry()" v-model="inputCountry" type="text" placeholder="Search for a country...">
+    <select name="region" class="regionFilter" @change="changeRegion()" v-model="selectedRegion">
+      <option value="">Worldwide</option>
+      <option v-for="(item, index) in region" :key="index" :value="item">{{ item }}</option>
+    </select>
+    </div>
+    <div class="showCountries row">
+      <SearchError v-if="error" :isFromHome='true'/>
+        <div class="card" v-for="(item, index) in showCountries" :key="index">
+          <router-link v-bind:to="item.alpha3Code">
+          <div class="card-img"><img :src="item.flag" :alt="item.name" width="300px"></div>
+          <div class="card-text">
+            <h1 class="country-name">{{ item.name }}</h1>
+            <div class="population"><span>Population:</span> {{ item.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}</div>
+            <div class="region"><span>Region:</span> {{ item.subregion }}</div>
+            <div class="capital"><span>Capital: {{ item.capital }}</span></div>
+          </div>
+          </router-link>
+        </div>
+    </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import SearchError from '@/components/SearchError.vue'
 
 export default {
   name: 'Home',
-  components: {
-    HelloWorld
+  
+  data () {
+    return{
+      region: ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'],
+      inputCountry: '',
+      searchedCountry: '',
+      selectedRegion: '',
+      showCountries: '',
+      data: '',
+      RegionCountries: '',
+      error: false
+    }
+  },
+  components:{
+    SearchError
+  },
+  created(){
+    fetch('https://restcountries.eu/rest/v2/all/').then(response => response.json()).then(recivedData => {
+      if(recivedData.status == 404) console.log('Cos sie popsulo')
+       else {
+         this.data = recivedData
+         this.RegionCountries = recivedData
+         this.showCountries = recivedData
+        //  console.log(recivedData)
+       }
+      if(localStorage.getItem('savedRegion')) {
+        this.selectedRegion = localStorage.getItem('savedRegion')
+        this.changeRegion()
+      }})
+  },
+  methods: {
+    changeRegion() {
+      if(!this.selectedRegion) this.RegionCountries = this.data
+      else this.RegionCountries = this.data.filter(item=> item.region == this.selectedRegion)
+      this.showCountries = this.RegionCountries
+      localStorage.setItem('savedRegion', this.selectedRegion)
+      this.changeCountry()
+    },
+
+    changeCountry () {
+      const useThisData = this.RegionCountries ? this.RegionCountries : this.data
+
+        this.searchedCountry = useThisData.filter((filterCountry) => 
+          filterCountry.name.toLowerCase().includes(this.inputCountry.toLowerCase().trim())
+          || filterCountry.alpha3Code.toLowerCase().includes(this.inputCountry.toLowerCase())
+          || filterCountry.nativeName.toLowerCase().includes(this.inputCountry.toLowerCase().trim()))
+  
+
+      this.showCountries = this.searchedCountry
+      this.error = this.showCountries.length == 0 ? true : false
+    }
   }
 }
 </script>
+
+<style>
+.home{
+    padding: 48px 0;
+}
+
+.row{
+    display: flex;
+    justify-content: space-between;
+}
+
+.showCountries.row{
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.search-bar{
+    display: flex;
+    position: relative;
+    align-items: center;
+}
+
+.search-icon{
+    position: absolute;
+    width:30px;
+    left: 8px;
+    display: flex;
+}
+
+input{
+    padding: 16px 48px;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--DarkBlueElement);
+    color: white;
+    width: min(300px, 100%);
+}
+
+input::placeholder{
+    color: var(--VeryLightGrayBG);
+}
+
+
+.regionFilter,
+.regionFilter:only-child{
+    background-color: var(--DarkBlueElement);
+    color: var(--VeryLightGrayBG);
+    padding: 18px;
+    border-radius: 8px;
+    border: none;
+}
+.showCountries{
+    margin-top: 32px
+}
+
+.card{
+    width: min(300px, 90%);
+    background-color: var(--DarkBlueElement);
+    margin-right: 10px;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+}
+
+.card:hover{
+    cursor: pointer;
+}
+
+.card-img {
+    height: 200px;
+    overflow: hidden;
+}
+
+.card-text{
+    padding: 0 20px;
+}
+
+.country-name{
+  margin-top:12px
+}
+
+.card-text span{
+    font-weight: 800;
+}
+
+.region{
+    padding: 8px 0;
+}
+
+@media(max-width:678px){
+    .showCountries.row{
+        justify-content: center;
+    }
+}
+</style>
