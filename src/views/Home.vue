@@ -10,7 +10,7 @@
       <option v-for="(continent, index) in region" :key="index" :value="continent">{{ continent }}</option>
     </select>
     </div>
-    <div class="showCountries row">
+    <div class="showCountries row" v-if="isLoaded">
       <SearchError v-if="error" :isFromHome='true'/>
         <div class="card" v-for="(country, index) in showCountries" :key="index">
           <router-link v-bind:to="country.alpha3Code">
@@ -24,12 +24,14 @@
           </router-link>
         </div>
     </div>
+    <div v-else><Loader /></div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import SearchError from '@/components/SearchError.vue'
+import Loader from '@/components/Loader.vue'
 
 export default {
   name: 'Home',
@@ -43,11 +45,13 @@ export default {
       showCountries: '',
       data: [],
       RegionCountries: [],
-      error: false
+      error: '',
+      isLoaded: false
     }
   },
   components:{
-    SearchError
+    SearchError,
+    Loader
   },
   created(){
     fetch('https://restcountries.eu/rest/v2/all/').then(response => response.json()).then(recivedData => {
@@ -56,6 +60,7 @@ export default {
          this.data = recivedData
          this.RegionCountries = recivedData
          this.showCountries = recivedData
+         this.isLoaded = true
         //  console.log(recivedData)
        }
       if(localStorage.getItem('savedRegion')) {
