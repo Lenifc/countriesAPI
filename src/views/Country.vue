@@ -34,7 +34,7 @@
          </div>
       </div>
    </div>
-   <div v-else><img class="loader" src="@/assets/spinner.gif"></div>
+   <div v-else><Loader/></div>
 
 
 </div>
@@ -43,9 +43,10 @@
 <script>
 import SearchError from '@/components/SearchError.vue'
 import BackButton from '@/components/BackButton.vue'
+import Loader from '@/components/Loader.vue'
 
 export default {
-  components: { SearchError, BackButton },
+  components: { SearchError, BackButton, Loader },
 
    data() {
       return {
@@ -65,7 +66,10 @@ export default {
       }
    },
    watch: {
-      '$route.params.country': 'fetchCountry'
+      '$route.params.country': function (newCountryName) {
+         console.log(newCountryName);
+          this.fetchCountry(newCountryName)
+      }
    },
    computed:{
       countryPopulation: function() { return this.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")},
@@ -75,10 +79,12 @@ export default {
       Borders:   function() { return this.data.borders.map(border => border)},
    },
    methods: {
-      fetchCountry() {
-         fetch(`https://restcountries.eu/rest/v2/alpha/${this.name}`)
+      fetchCountry(watchVal) {
+         console.log(1);
+         fetch(`https://restcountries.eu/rest/v2/alpha/${watchVal ? watchVal : this.name}`)
             .then(response => response.json())
             .then(data => {
+               console.log(2);
                if (data.status == 404 || data.status == 400) {
                   this.error = true
                   return
@@ -164,12 +170,6 @@ export default {
 
 .btn-container{
    max-width: 100px;
-}
-
-.loader{
-   margin: 32px auto;
-   display: flex;
-   justify-content: center;
 }
 
 @media(max-width: 1000px){
