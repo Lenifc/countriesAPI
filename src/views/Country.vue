@@ -64,9 +64,8 @@ export default {
          this.name = this.$route.params.country
       }
    },
-   updated() {
-         this.fetchCountry()
-      
+   watch: {
+      '$route.params.country': 'fetchCountry'
    },
    computed:{
       countryPopulation: function() { return this.data.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")},
