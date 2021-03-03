@@ -4,20 +4,20 @@
       <div class="search-icon"><img src="@/assets/search.svg" alt="search" width="30px"></div>
       <!-- @ === v-on: -->
       <!-- : === v-bind: -->
-      <input @input="changeCountry()" v-model="inputCountry" type="text" placeholder="Search for a country...">
+      <input @input="filterCountries()" v-model="inputCountry" type="text" placeholder="Search for a country...">
     <select name="region" class="regionFilter" @change="changeRegion()" v-model="selectedRegion">
       <option value="">Worldwide</option>
       <option v-for="(continent, index) in region" :key="index" :value="continent">{{ continent }}</option>
     </select>
     </div>
-    <div class="showCountries row" v-if="isLoaded">
+    <div class="showFilteredCountries row" v-if="isLoaded">
       <SearchError v-if="error" :isFromHome='true'/>
-        <div class="card" v-for="(country, index) in showCountries" :key="index">
+        <div class="card" v-for="(country, index) in showFilteredCountries" :key="index">
           <router-link v-bind:to="country.alpha3Code">
           <div class="card-img"><img :src="country.flag" :alt="country.name" width="300px"></div>
           <div class="card-text">
             <h1 class="country-name">{{ country.name }}</h1>
-            <div class="population"><span>Population:</span> {{ country.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ") }}</div>
+            <div class="population"><span>Population:</span> {{ population(country) }}</div>
             <div class="region"><span>Region:</span> {{ country.subregion }}</div>
             <div class="capital"><span>Capital: {{ country.capital }}</span></div>
           </div>
@@ -42,7 +42,7 @@ export default {
       inputCountry: '',
       searchedCountry: '',
       selectedRegion: '',
-      showCountries: '',
+      showFilteredCountries: '',
       data: [],
       RegionCountries: [],
       error: '',
@@ -59,7 +59,7 @@ export default {
        else {
          this.data = recivedData
          this.RegionCountries = recivedData
-         this.showCountries = recivedData
+         this.showFilteredCountries = recivedData
          this.isLoaded = true
         //  console.log(recivedData)
        }
@@ -72,12 +72,15 @@ export default {
     changeRegion() {
       if(!this.selectedRegion) this.RegionCountries = this.data
       else this.RegionCountries = this.data.filter(item=> item.region == this.selectedRegion)
-      this.showCountries = this.RegionCountries
+      this.showFilteredCountries = this.RegionCountries
       localStorage.setItem('savedRegion', this.selectedRegion)
-      this.changeCountry()
+      this.filterCountries()
     },
+    population(country){ 
+      return country.population.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+      },
 
-    changeCountry () {
+    filterCountries () {
       const useThisData = this.RegionCountries ? this.RegionCountries : this.data
 
         this.searchedCountry = useThisData.filter((filterCountry) => 
@@ -87,8 +90,8 @@ export default {
           // Mozliwosc wyszukania krajow po pelnych nazwach, skrotach jak i ich ojczystych naazwach
   
 
-      this.showCountries = this.searchedCountry
-      this.error = this.showCountries.length == 0 ? true : false
+      this.showFilteredCountries = this.searchedCountry
+      this.error = !this.showFilteredCountries.length ? true : false
     }
   }
 }
@@ -104,7 +107,7 @@ export default {
     justify-content: space-between;
 }
 
-.showCountries.row{
+.showFilteredCountries.row{
     display: flex;
     justify-content: center;
     gap: 20px;
@@ -146,7 +149,7 @@ input::placeholder{
     border-radius: 8px;
     border: none;
 }
-.showCountries{
+.showFilteredCountries{
     margin-top: 32px
 }
 
@@ -184,7 +187,7 @@ input::placeholder{
 }
 
 @media(max-width:678px){
-    .showCountries.row{
+    .showFilteredCountries.row{
         justify-content: center;
     }
 }

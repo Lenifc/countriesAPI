@@ -18,7 +18,7 @@
                   <div class="capital"><span>Capital: {{ data.capital }}</span></div>
                </div>
                <div class="details-row2">
-                  <div class="size"><span>Size: </span>{{ data.area ? countrySize : "Unknown" }} km<sup>2</sup></div>
+                  <div class="size"><span>Size: </span>{{ data.area ? countrySize : "Unknown" }} <span v-if="data.area"> km<sup>2</sup></span></div>
                   <!-- <div class="size" v-if="data.area"><span>Size: </span>{{ countrySize }} km<sup>2</sup></div> -->
                   <!-- <div class="size" v-else><span>Size: </span>Unknown</div> -->
                   <div class="currencies"><span>Currencies: </span>{{ Currencies }}</div>
@@ -27,14 +27,14 @@
             </div>
             <div class="borders" v-if="data.borders.length"><span>Border Countries: </span>
                <router-link :to="border" v-for="(border, index) in Borders" :key="index">
-                  <button class="border-btn"  ><!-- mimo zmiany linku funkcja updated() cos nie dziala, wiec wymuszam odswiezenie poprzez @click -->{{ border }}</button>
+                  <button class="border-btn">{{ border }}</button>
                </router-link>
                
             </div>
          </div>
       </div>
    </div>
-   <div v-else><Loader/></div>
+   <div v-else-if="!isLoaded && !error"><Loader/></div>
 
 
 </div>
@@ -58,17 +58,17 @@ export default {
    },
    created() {
       this.fetchCountry()
-      // console.log(this.$route.params.country)
    },
-   beforeUpdate(){
-      if (this.name !== this.$route.params.country) {
-         this.name = this.$route.params.country
-      }
-   },
+   // beforeUpdate(){
+   //    if (this.name !== this.$route.params.country) {
+   //       this.name = this.$route.params.country
+   //    }
+   // }, 
+   // beforeUpdate and updated moved to watch
    watch: {
-      '$route.params.country': function (newCountryName) {
-         console.log(newCountryName);
-          this.fetchCountry(newCountryName)
+      '$route.params.country': function (newCountryName) { 
+         this.name = newCountryName
+         this.fetchCountry() 
       }
    },
    computed:{
@@ -79,22 +79,17 @@ export default {
       Borders:   function() { return this.data.borders.map(border => border)},
    },
    methods: {
-      fetchCountry(watchVal) {
-         console.log(1);
-         fetch(`https://restcountries.eu/rest/v2/alpha/${watchVal ? watchVal : this.name}`)
+      fetchCountry() {
+         // console.log(this.name);
+         fetch(`https://restcountries.eu/rest/v2/alpha/${this.name}`)
             .then(response => response.json())
             .then(data => {
-               console.log(2);
                if (data.status == 404 || data.status == 400) {
                   this.error = true
                   return
                } else this.data = data
                this.isLoaded = true
             })
-      },
-
-      goBack(){
-         this.$router.go(-1)
       }
    }
 }
