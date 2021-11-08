@@ -54,7 +54,7 @@ export default {
     Loader
   },
   created(){
-    fetch('https://restcountries.eu/rest/v2/all/').then(response => response.json()).then(recivedData => {
+    fetch('https://restcountries.com/v2/all/').then(response => response.json()).then(recivedData => {
       if(recivedData.status == 404) console.log('Cos sie popsulo')
        else {
          this.data = recivedData
