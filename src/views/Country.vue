@@ -81,7 +81,7 @@ export default {
    methods: {
       fetchCountry() {
          // console.log(this.name);
-         fetch(`https://restcountries.eu/rest/v2/alpha/${this.name}`)
+         fetch(`https://restcountries.com/v2/alpha/${this.name}`)
             .then(response => response.json())
             .then(data => {
                if (data.status == 404 || data.status == 400) {
