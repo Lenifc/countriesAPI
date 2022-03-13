@@ -25,7 +25,7 @@
                   <div class="languages"><span>Languages: </span>{{ Languages}}</div>
                </div>
             </div>
-            <div class="borders" v-if="data.borders.length"><span>Border Countries: </span>
+            <div class="borders" v-if="data.borders && data.borders.length"><span>Border Countries: </span>
                <router-link :to="border" v-for="(border, index) in Borders" :key="index">
                   <button class="border-btn">{{ border }}</button>
                </router-link>
