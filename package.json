@@ -2,7 +2,7 @@
   "name": "countriesapi",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://lenifc.github.io",
+  "homepage": "https://lenifc.github.io/countriesAPI",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
