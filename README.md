@@ -1,7 +1,7 @@
 # Live demo: https://lenifc.github.io/countriesAPI/
 
 
-countriesapi
+App created in Vue2 using Options API, connected with countries REST API
 
 ## Project setup
 ```
