@@ -1,4 +1,7 @@
-# countriesapi
+# Live demo: https://lenifc.github.io/countriesAPI/
+
+
+countriesapi
 
 ## Project setup
 ```
